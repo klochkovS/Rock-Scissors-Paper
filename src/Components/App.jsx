@@ -51,7 +51,7 @@ class App extends Component {
       gameStatus: params.gameStatus,
     }));
 
-    socket.on('timer', (params) => {
+    socket.on('start game', (params) => {
       this.setState({
         timer: params.timer,
         gameStatus: params.gameStatus,
@@ -66,7 +66,7 @@ class App extends Component {
         : winId === playerId
           ? 'Вы победили!'
           : 'Вы проиграли.';
-      const opponent = params.gameInfo.filter(player => player.id !== playerId);;
+      const opponent = params.gameInfo.filter(player => player.id !== playerId);
       this.setState({
         gesture: '',
         bothIsReady: false,

@@ -90,7 +90,7 @@ io.on('connection', (socket) => {
         });
         if (val.players[0].isReady
           && val.players[1].isReady) {
-          io.to(params.room).emit('timer', {
+          io.to(params.room).emit('start game', {
             timer: '',
             gameStatus: 'Игра началась! Выберите жест.',
             isReady: true,
