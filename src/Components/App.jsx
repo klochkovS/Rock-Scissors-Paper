@@ -5,19 +5,19 @@ import { v4 } from 'uuid';
 class App extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       endpoint: 'http://localhost:4000',
       roomId: '',
       playerId: '',
-      bothOnline: false,
+      bothIsOnline: false,
+      bothIsReady: false,
       timer: '',
+      gameStatus: '',
       gesture: '',
       result: '',
     };
 
     this.ready = this.ready.bind(this);
-    this.send = this.send.bind(this);
     this.pickGesture = this.pickGesture.bind(this);
   }
 
@@ -33,22 +33,6 @@ class App extends Component {
     this.setState({ roomId: newRoom, playerId: newPlayer });
   }
 
-  // componentWillMount() {
-  //   //доделать плеера
-  //   const { playerId } = this.state;
-  //   console.log('1', playerId);
-  //   let player = playerId ? '' : 'player2';
-  //   console.log('2', player);
-  //   let room = document.location.hash.replace('#', '');
-  //   if (room === '') {
-  //     room = `${v4()}`;
-  //     player = 'player1';
-  //     document.location.hash = room;
-  //   }
-  //   console.log('3', player);
-  //   this.setState({ roomId: room, playerId: player });
-  // }
-
   componentDidMount() {
     const { endpoint, roomId, playerId } = this.state;
     const socket = io(endpoint);
@@ -57,22 +41,38 @@ class App extends Component {
       player: playerId,
     });
 
-    console.log('connect: ', roomId, playerId);
     socket.emit('connect player', {
       room: roomId,
       player: playerId,
     });
 
-    socket.on('connect player', bothOnline => this.setState({ bothOnline }));
+    socket.on('connect player', params => this.setState({
+      bothIsOnline: params.bothIsOnline,
+      gameStatus: params.gameStatus,
+    }));
 
-    socket.on('timer', (timer) => {
-      console.log(timer);
-      this.setState({ timer });
+    socket.on('timer', (params) => {
+      this.setState({
+        timer: params.timer,
+        gameStatus: params.gameStatus,
+        bothIsReady: params.isReady,
+      });
     });
 
-    socket.on('result', (winId) => {
-      const result = winId === playerId ? 'Вы победили!' : 'Вы проиграли.'
-      this.setState({ result });
+    socket.on('result', (params) => {
+      const winId = params.result;
+      const result = winId === '0'
+        ? 'Ничья!'
+        : winId === playerId
+          ? 'Вы победили!'
+          : 'Вы проиграли.';
+      const opponent = params.gameInfo.filter(player => player.id !== playerId);;
+      this.setState({
+        gesture: '',
+        bothIsReady: false,
+        result,
+        gameStatus: `Ваш противник выбрал - ${opponent[0].gesture}`,
+      });
     });
   }
 
@@ -83,18 +83,14 @@ class App extends Component {
       player: playerId,
       room: roomId,
     });
+    this.setState({ gameStatus: 'Ожидание готовности второго игрока...' });
   }
 
   pickGesture(gesture) {
-    this.setState({ gesture });
-  }
-
-  send() {
     const {
       endpoint,
       playerId,
       roomId,
-      gesture,
     } = this.state;
 
     const socket = io(endpoint);
@@ -103,20 +99,19 @@ class App extends Component {
       player: playerId,
       gesture,
     });
+    this.setState({ gameStatus: 'Соперник выбирает жест...', gesture });
   }
 
   render() {
     return (
       <div>
-        <label>id игрока: {this.state.playerId}</label>
-        <hr />
         <label>
-          {this.state.bothOnline ? 'Игрок 2 не в сети...' : ''}
+          {this.state.bothIsOnline ? '' : 'Игрок 2 не в сети...'}
         </label>
         <br /><label>Статус игры: </label>
-        {this.state.timer ?
-          <label>{this.state.timer}</label> :
-          'Ожидание опонента...'
+        {this.state.gameStatus ?
+          <label>{this.state.gameStatus}</label> :
+          ''
         }
 
         <br /><label>Результат: </label>
@@ -125,17 +120,30 @@ class App extends Component {
           ''
         }
         <br />
-        <button onClick={() => this.ready()}>
-          ГОТОВ!
+        {this.state.gesture ?
+          <label>Вы выбрали: {this.state.gesture}</label> :
+          ''
+        }
+        <hr />
+        {this.state.bothIsOnline ?
+          <button
+            disabled={this.state.bothIsReady ? 'disabled' : ''}
+            onClick={() => this.ready()}
+          > ГОТОВ!
+          </button> : ''
+        }
+
+        <button
+          disabled={this.state.bothIsReady ? '' : 'disabled'}
+          id="blue"
+          onClick={() => this.pickGesture('rock')}
+        >
+          Камень
         </button>
-        <button onClick={() => this.send()}>
-          Send gesture
-        </button>
-        <button id="blue" onClick={() => this.pickGesture('rock')}>Камень</button>
-        <button id="red" onClick={() => this.pickGesture('scissors')}>Ножницы</button>
-        <button id="red" onClick={() => this.pickGesture('paper')}>Бумага</button>
-        <button id="red" onClick={() => this.pickGesture('lizard')}>Ящерица</button>
-        <button id="red" onClick={() => this.pickGesture('spock')}>Спок</button>
+        <button disabled={this.state.bothIsReady ? '' : 'disabled'} id="red" onClick={() => this.pickGesture('scissors')}>Ножницы</button>
+        <button disabled={this.state.bothIsReady ? '' : 'disabled'} id="red" onClick={() => this.pickGesture('paper')}>Бумага</button>
+        <button disabled={this.state.bothIsReady ? '' : 'disabled'} id="red" onClick={() => this.pickGesture('lizard')}>Ящерица</button>
+        <button disabled={this.state.bothIsReady ? '' : 'disabled'} id="red" onClick={() => this.pickGesture('spock')}>Спок</button>
 
 
       </div>

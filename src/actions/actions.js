@@ -1,16 +1,17 @@
 import C from '../constants';
 
 export newRoom = () => {
-  let newRoom = document.location.hash.replace('#', '');
+  let roomId = document.location.hash.replace('#', '');
 
-  if (newRoom === '') {
-    newRoom = v4();
-    document.location.hash = newRoom;
+  if (roomId === '') {
+    roomId = v4();
+    document.location.hash = roomId;
   }
 
   return (
     {
-      type: C.CREATE_ROOM
+      type: C.CREATE_ROOM,
+      roomId,
     }
   )
 }

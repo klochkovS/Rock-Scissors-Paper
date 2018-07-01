@@ -33,15 +33,14 @@ let games = [
 
 const finish_game = (game) => {
   game.players[0].isReady = false;
-  game.players[1].gesture = '';
-  game.players[0].isReady = false;
+  game.players[0].gesture = '';
+  game.players[1].isReady = false;
   game.players[1].gesture = '';
 };
 
 
 io.on('connection', (socket) => {
   console.log('User connected');
-
   socket.on('new game', (params) => {
     const test = games.find(val => val.roomId === params.room);
     if (test === undefined) {
@@ -54,7 +53,6 @@ io.on('connection', (socket) => {
       };
       games.push(newGame);
     }
-    console.log('New game', games[1].players);
     socket.join(params.room);
     // io.to(val).emit('message', '1_всем в комнате');
     // socket.to(val).emit('message', '2_всем кроме себя в комнате');
@@ -70,9 +68,11 @@ io.on('connection', (socket) => {
         // Все места заняты
         console.log('Все места заняты');
       }
-
-      if (game.players[0].id && game.players[1]) {
-        io.to(params.room).emit('connect player', true);
+      if (game.players[0].id && game.players[1].id) {
+        io.to(params.room).emit('connect player', {
+          bothIsOnline: true,
+          gameStatus: 'Нажмите "Готов!"',
+        });
       }
     } else {
       // Игра не найдена
@@ -90,16 +90,17 @@ io.on('connection', (socket) => {
         });
         if (val.players[0].isReady
           && val.players[1].isReady) {
-          io.to(params.room).emit('timer', 'Ходите!');
-        } else {
-          io.to(params.room).emit('timer', 'Ждем опонента...');
+          io.to(params.room).emit('timer', {
+            timer: '',
+            gameStatus: 'Игра началась! Выберите жест.',
+            isReady: true,
+          });
         }
       }
     });
   });
 
   socket.on('step', (params) => {
-    console.log('Прислыл фигуру', params);
     let result;
     games.forEach((val) => {
       if (val.roomId === params.room) {
@@ -109,14 +110,14 @@ io.on('connection', (socket) => {
           }
         });
 
-        //val[params.player].gesture = params.gesture;
-
         if (val.players[0].gesture
           && val.players[1].gesture) {
           result = play(val.players[0], val.players[1]);
-          io.to(params.room).emit('result', result);
+          io.to(params.room).emit('result', {
+            result,
+            gameInfo: val.players,
+          });
           finish_game(val);
-          console.log('игра кончилась результат', games[1].players[1]);
         }
       }
     });
