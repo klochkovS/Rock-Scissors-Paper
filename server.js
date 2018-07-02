@@ -59,6 +59,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('connect player', (params) => {
+    console.log(params.room);
     const game = games.find(val => val.roomId === params.room);
     if (game !== undefined) {
       const player = game.players.find(player => player.id === '');

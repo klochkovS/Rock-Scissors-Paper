@@ -34,7 +34,7 @@ export const game = (state = {}, action) => {
     case C.GET_RESULT:
       return {
         ...state,
-        gameStatus: action.game,
+        gameStatus: action.gameStatus,
         bothIsReady: action.bothIsReady,
         gesture: action.gesture,
         result: action.result,
