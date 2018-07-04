@@ -5,7 +5,7 @@ const io = require('socket.io')(server);
 const play = require('./lib/game');
 
 app.use(express.static('dist'));
-app.get('/:game_id', (req, res) => {
+app.get('/', (req, res) => {
   res.set({ 'Access-Control-Allow-Origin': '*' })
     .sendFile(__dirname + '/dist/index.html');
 });
