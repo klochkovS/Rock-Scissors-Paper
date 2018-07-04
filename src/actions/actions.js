@@ -87,7 +87,7 @@ export const pickGesture = gesture => (dispatch, getState) => {
 
   return dispatch({
     type: C.PICK_GESTURE,
-    gameStatus: 'The enemy choosing gesture...',
+    gameStatus: 'The enemy is choosing gesture...',
     gesture,
   });
 };
@@ -99,13 +99,13 @@ export const onResult = socket => (dispatch, getState) => {
     const result = winId === '0'
       ? 'Draw!'
       : winId === playerId
-        ? 'You Win!'
-        : 'You loose.';
+        ? 'You Won!'
+        : 'You lost.';
     const opponent = params.gameInfo
       .filter(player => player.id !== playerId);
     dispatch({
       type: C.GET_RESULT,
-      gameStatus: `Your enemy have picked - ${opponent[0].gesture}`,
+      gameStatus: `Your enemy has picked - ${opponent[0].gesture}`,
       bothIsReady: false,
       gesture: '',
       result,

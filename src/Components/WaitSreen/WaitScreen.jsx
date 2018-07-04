@@ -20,7 +20,7 @@ class WaitScreen extends Component {
     const { gameStatus } = this.props;
     return (
       <div className="waiting-screen">
-        <label htmlFor="share-link">Share a link with a friend to start the game.</label>
+        <label htmlFor="share-link">Share this link with your friend to start the game.</label>
         <input
           ref={this.shareLinkRef}
           onClick={this.focusTextInput}
