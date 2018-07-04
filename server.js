@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-const server = require('http').Server(app);
-const io = require('socket.io')(server);
+//const server = require('http').Server(app);
+const io = require('socket.io')(app);
 const play = require('./lib/game');
 
 app.use(express.static('dist'));
