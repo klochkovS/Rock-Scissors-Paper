@@ -4,12 +4,12 @@ const server = require('http').Server(app);
 const io = require('socket.io')(server);
 const play = require('./lib/game');
 
+const PORT = process.env.PORT || 1234;
+
 app.use(express.static('dist'));
-app.get('/*', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
-app.use(r => e.res.status(404).end('Stiil not here, sorry!'));
-app.use((e, r, res, n) => res.status(500).end(`Error: ${e}`));
 
 
 /**
@@ -175,6 +175,6 @@ io.on('connection', (socket) => {
 });
 
 
-server.listen(1234, () => {
-  console.log('App listening on port 1234!');
+server.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}!`);
 });
