@@ -6,11 +6,8 @@ const play = require('./lib/game');
 
 app.use(express.static('dist'));
 app.get('/:game_id', (req, res) => {
-  console.log(req.params.game_id);
-  res
-    .set({ 'Access-Control-Allow-Origin': '*' })
-    .json({ 'game_id': req.params.game_id });
-  //res.sendFile(__dirname + '/dist/index.html');
+  res.set({ 'Access-Control-Allow-Origin': '*' })
+    .sendFile(__dirname + '/dist/index.html');
 });
 
 
@@ -177,6 +174,6 @@ io.on('connection', (socket) => {
 });
 
 
-server.listen(4000, () => {
-  console.log('App listening on port 4000!');
+server.listen(1234, () => {
+  console.log('App listening on port 1234!');
 });

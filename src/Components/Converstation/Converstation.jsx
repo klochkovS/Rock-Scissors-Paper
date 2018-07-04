@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 import { v4 } from 'uuid';
 import './converstation.scss';
 
-const socket = io('http://localhost:4000');
+const socket = io();
 
 class Converstation extends Component {
   constructor(props) {

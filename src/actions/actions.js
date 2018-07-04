@@ -51,9 +51,9 @@ export const onConnectPlayer = socket => (dispatch, getState) => {
 };
 
 export const ready = () => (dispatch, getState) => {
-  const { endpoint, gameId, playerId } = getState().game;
+  const { gameId, playerId } = getState().game;
   console.log(getState());
-  const socket = io(endpoint);
+  const socket = io();
   socket.emit('ready', {
     room: gameId,
     player: playerId,
@@ -77,8 +77,8 @@ export const onStartGame = socket => (dispatch) => {
 };
 
 export const pickGesture = gesture => (dispatch, getState) => {
-  const { endpoint, gameId, playerId } = getState().game;
-  const socket = io(endpoint);
+  const { gameId, playerId } = getState().game;
+  const socket = io();
   socket.emit('step', {
     room: gameId,
     player: playerId,

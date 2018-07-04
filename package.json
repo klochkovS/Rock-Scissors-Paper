@@ -2,10 +2,15 @@
   "name": "foraSoft",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=8.5.0"
+  },
   "author": "klochkovS <fluurr@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "webpack-dev-server --mode development",
+    "prod": "webpack --config webpack.production.js",
+    "postinstall": "./node_modules/webpack/bin/webpack.js --config webpack.production.js",
     "start": "node server.js"
   },
   "devDependencies": {

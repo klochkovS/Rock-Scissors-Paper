@@ -8,14 +8,13 @@ import '../styles/app.scss';
 class App extends Component {
   componentWillMount() {
     const {
-      endpoint,
       newGame,
       onConnectPlayer,
       onStartGame,
       onResult,
       onNewMessage,
     } = this.props;
-    const socket = io(endpoint);
+    const socket = io();
 
     newGame(socket);
     onConnectPlayer(socket);
