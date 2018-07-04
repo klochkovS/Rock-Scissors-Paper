@@ -6,8 +6,7 @@ const play = require('./lib/game');
 
 app.use(express.static('dist'));
 app.get('/', (req, res) => {
-  res.set({ 'Access-Control-Allow-Origin': '*' })
-    .sendFile(__dirname + '/dist/index.html');
+  res.sendFile(__dirname + '/dist/index.html');
 });
 
 
