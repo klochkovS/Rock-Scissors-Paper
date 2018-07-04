@@ -30,14 +30,14 @@ const reducers = combineReducers({ game, messages });
 //   return returnValue;
 // };
 
-const logger = createLogger();
+//const logger = createLogger();
 
 const storeFactory = () => createStore(
   reducers,
   // localStorage['redux-store'] ?
   //   JSON.parse(localStorage['redux-store']) :
   initialState,
-  applyMiddleware(thunk, logger),
+  applyMiddleware(thunk),
 );
 
 export default storeFactory;
