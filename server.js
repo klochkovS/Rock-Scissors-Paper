@@ -1,13 +1,15 @@
 const express = require('express');
 const app = express();
-//const server = require('http').Server(app);
-const io = require('socket.io')(app);
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
 const play = require('./lib/game');
 
 app.use(express.static('dist'));
-app.get('/', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
+app.use(r => e.res.status(404).end('Stiil not here, sorry!'));
+app.use((e, r, res, n) => res.status(500).end(`Error: ${e}`));
 
 
 /**
