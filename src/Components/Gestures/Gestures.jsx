@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { v4 } from 'uuid';
+import './gestures.scss';
 
 const gest = [
   { val: 'rock', name: 'Камень' },
@@ -12,14 +13,15 @@ const gest = [
 
 
 const Gestures = ({ bothIsReady, pickGesture }) => (
-  <section>
+  <section className="menu">
     {gest.map(value => (
       <button
+        className={`menu__button_icon_${value.val}`}
         key={v4()}
         disabled={bothIsReady ? '' : 'disabled'}
         onClick={() => pickGesture(value.val)}
       >
-        {value.name}
+        {/* {value.name} */}
       </button>
     ))}
   </section>

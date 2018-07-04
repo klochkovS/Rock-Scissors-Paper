@@ -17,6 +17,17 @@ module.exports = {
         loader: 'babel-loader',
         options: { presets: ['env'] },
       },
+      {
+        test: /.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(jpg|png)$/,
+        loader: 'file-loader',
+        options: {
+          name: 'image/[name].[ext]',
+        },
+      },
     ],
   },
   resolve: { extensions: ['*', '.js', '.jsx'] },

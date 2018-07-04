@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import { pickGesture } from '../actions/actions';
-import Gestures from '../Components/Gestures';
+import Gestures from '../Components/Gestures/Gestures';
 
 
 const mapStateToProps = state => ({
-  endpoint: state.endpoint,
-  bothIsReady: state.bothIsReady,
+  endpoint: state.game.endpoint,
+  bothIsReady: state.game.bothIsReady,
 });
 
 const mapDispatchToProps = dispatch => ({

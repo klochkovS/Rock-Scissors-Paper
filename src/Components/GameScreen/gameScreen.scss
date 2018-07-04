@@ -1,0 +1,31 @@
+.game-screen {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+}
+
+.game-screen__status-bar {
+  padding: 12px;
+  margin-bottom: 8px;
+  background-color: #fcf8e3;
+  border: 1px solid #faebcc;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.game-screen__main-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 1px solid rgb(230, 230, 230);
+}
+
+.game-screen__ready-btn {
+  height: 48px;
+}
+
+.result {
+  color: rgb(202, 58, 58);
+  font-style: italic;
+}

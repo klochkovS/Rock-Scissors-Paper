@@ -1,0 +1,54 @@
+.menu {
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 300px;
+}
+
+.menu__button_icon_rock {
+  background-image: url("./img/rock.png");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+.menu__button_icon_scissors {
+  background-image: url("./img/scissors.png");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+
+}
+.menu__button_icon_paper {
+  background-image: url("./img/paper.png");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+.menu__button_icon_lizard {
+  background-image: url("./img/lizard.png");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}
+.menu__button_icon_spock {
+  background-image: url("./img/spock.png");
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+}

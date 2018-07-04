@@ -2,12 +2,23 @@ import io from 'socket.io-client';
 import { v4 } from 'uuid';
 import C from '../constants';
 
+export const onNewMessage = socket => (dispatch, getState) => {
+  const { playerId } = getState().game;
+  socket.on('new message', (params) => {
+    const sender = playerId === params.playerId ? 'you' : 'enemy';
+    return dispatch({
+      type: C.ADD_MESSAGE,
+      sender,
+      msg: params.msg,
+    });
+  });
+};
 
 export const newGame = socket => (dispatch, getState) => {
-  const { playerId } = getState();
+  const { playerId } = getState().game;
   let gameId = document.location.hash.replace('#', '');
 
-  const newPlayer = playerId ? playerId : v4();
+  const newPlayer = !playerId ? v4() : playerId;
   if (gameId === '') {
     gameId = v4();
     document.location.hash = gameId;
@@ -26,7 +37,7 @@ export const newGame = socket => (dispatch, getState) => {
 };
 
 export const onConnectPlayer = socket => (dispatch, getState) => {
-  const { gameId, playerId } = getState();
+  const { gameId, playerId } = getState().game;
   socket.emit('connect player', {
     room: gameId,
     player: playerId,
@@ -35,11 +46,14 @@ export const onConnectPlayer = socket => (dispatch, getState) => {
     type: C.CONNECT_PLAYER,
     bothIsOnline: params.bothIsOnline,
     gameStatus: params.gameStatus,
+    errorMsg: params.errorMsg
   }));
 };
 
-export const ready = socket => (dispatch, getState) => {
-  const { gameId, playerId } = getState();
+export const ready = () => (dispatch, getState) => {
+  const { endpoint, gameId, playerId } = getState().game;
+  console.log(getState());
+  const socket = io(endpoint);
   socket.emit('ready', {
     room: gameId,
     player: playerId,
@@ -47,7 +61,8 @@ export const ready = socket => (dispatch, getState) => {
 
   return dispatch({
     type: C.PLAYER_READY,
-    gameStatus: 'Ожидание готовности второго игрока...',
+    gameStatus: 'Waiting for the enemy to be ready...',
+    result: '',
   });
 };
 
@@ -62,8 +77,7 @@ export const onStartGame = socket => (dispatch) => {
 };
 
 export const pickGesture = gesture => (dispatch, getState) => {
-
-  const { endpoint, gameId, playerId } = getState();
+  const { endpoint, gameId, playerId } = getState().game;
   const socket = io(endpoint);
   socket.emit('step', {
     room: gameId,
@@ -72,26 +86,26 @@ export const pickGesture = gesture => (dispatch, getState) => {
   });
 
   return dispatch({
-    type: C.PICK_GESURE,
-    gameStatus: 'Соперник выбирает жест...',
+    type: C.PICK_GESTURE,
+    gameStatus: 'The enemy choosing gesture...',
     gesture,
   });
 };
 
 export const onResult = socket => (dispatch, getState) => {
-  const { playerId } = getState();
+  const { playerId } = getState().game;
   socket.on('result', (params) => {
     const winId = params.result;
     const result = winId === '0'
-      ? 'Ничья!'
+      ? 'Draw!'
       : winId === playerId
-        ? 'Вы победили!'
-        : 'Вы проиграли.';
+        ? 'You Win!'
+        : 'You loose.';
     const opponent = params.gameInfo
       .filter(player => player.id !== playerId);
     dispatch({
       type: C.GET_RESULT,
-      gameStatus: `Ваш противник выбрал - ${opponent[0].gesture}`,
+      gameStatus: `Your enemy have picked - ${opponent[0].gesture}`,
       bothIsReady: false,
       gesture: '',
       result,

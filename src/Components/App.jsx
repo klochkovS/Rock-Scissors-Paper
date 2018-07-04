@@ -1,78 +1,53 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import io from 'socket.io-client';
-import GesturesContainer from '../Containers/GesturesContainer';
-import GameInfoContainer from '../Containers/GameInfoContainer';
+import WaitScreen from './WaitSreen/WaitScreen';
+import GameScreenContainer from '../Containers/GameScreenContainer';
+import '../styles/app.scss';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.handleReady = this.handleReady.bind(this);
-  }
-
-  componentDidMount() {
+  componentWillMount() {
     const {
       endpoint,
       newGame,
       onConnectPlayer,
       onStartGame,
       onResult,
+      onNewMessage,
     } = this.props;
     const socket = io(endpoint);
-    newGame(socket);
 
+    newGame(socket);
     onConnectPlayer(socket);
     onStartGame(socket);
     onResult(socket);
-  }
-
-  handleReady() {
-    const { endpoint, ready } = this.props;
-    const socket = io(endpoint);
-    ready(socket);
+    onNewMessage(socket);
   }
 
   render() {
-    const {
-      bothIsOnline,
-      bothIsReady,
-    } = this.props;
+    const { bothIsOnline, gameStatus, errorMsg } = this.props;
     return (
-      <div>
-
-        <GameInfoContainer />
-
-        {bothIsOnline
-          ? (
-            <button
-              disabled={bothIsReady ? 'disabled' : ''}
-              onClick={() => this.handleReady()}
-            >
-              ГОТОВ!
-            </button>
-          )
-          : ''
+      <section>
+        {errorMsg ?
+          <div className="alert">{errorMsg}</div> :
+          ''
         }
-
-        <GesturesContainer />
-      </div>
+        {bothIsOnline ? <GameScreenContainer /> : <WaitScreen {...gameStatus} />}
+      </section>
     );
   }
 }
 
 App.propTypes = {
   endpoint: PropTypes.string.isRequired,
+  gameStatus: PropTypes.string.isRequired,
   newGame: PropTypes.func.isRequired,
   onConnectPlayer: PropTypes.func.isRequired,
   onStartGame: PropTypes.func.isRequired,
   onResult: PropTypes.func.isRequired,
-  ready: PropTypes.func.isRequired,
+  onNewMessage: PropTypes.func.isRequired,
   bothIsOnline: PropTypes.bool.isRequired,
-  bothIsReady: PropTypes.bool.isRequired,
-  gameStatus: PropTypes.string.isRequired,
-  gesture: PropTypes.string.isRequired,
-  result: PropTypes.string.isRequired,
+  errorMsg: PropTypes.string.isRequired,
 };
 
 
